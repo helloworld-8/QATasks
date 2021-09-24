@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+<link href="https://visjs.github.io/vis-timeline/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+<script src="https://visjs.github.io/vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.5/math.min.js" integrity="sha512-Onmqz4gYRFo0j72hB29D1s0VEQHRZXnKhgjzcONKaR+wuIgll7I5nmcdCn8gu0bUWeNl1p4vuvu9ZZcGdJUExg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+</head>
+
+<body>
+
+		<div class="settings">
+			Steps (i): <input id="steps" value="100" type="text">
+			x=<input id="x" value="sin(i * 180 / 3.1459) * i" type="text">
+			y=<input id="y" value="0" type="text">
+			<button id="graph">Graph</button>
+		</div>
+
+		<div id="xgraph"></div>
+		<div id="ygraph"></div>
+		<div id="funkcijagraph"></div>
+
+		
+		
+
+<script type="text/javascript">
+
+
+
+
+function funkcija(x, y) {
+            if (x > y)
+            {
+                return x;
+            }
+            else if (x < y)
+            {
+                return y;
+            } else
+            {
+                return x;
+            }
+}
+
+
+	document.getElementById("graph").addEventListener("click", graph); 			
+	function graph() {		
+		
+		var names = ['X', 'Y'];
+		
+		var groups = new vis.DataSet();
+        groups.add({
+        id: 0,
+        content: names[0],
+        options: {
+            drawPoints: {
+                style: 'square' // square, circle
+            },
+            shaded: {
+                orientation: 'bottom' // top, bottom
+            }
+        }});
+
+    groups.add({
+        id: 1,
+        content: names[1],
+        options: {
+            style:'bar'
+        }});
+		
+		var options = {
+			width:  '50%',
+			height: '400px',
+			drawPoints: true
+		};
+		
+		var xgraph = document.getElementById('xgraph');
+		var ygraph = document.getElementById('ygraph');
+		var funkcijagraph = document.getElementById('funkcijagraph');
+		
+		var steps = document.getElementById("steps").value;
+		var xExpression = document.getElementById("x").value;
+		var yExpression = document.getElementById("y").value;
+		
+		var xPoints = [];
+		var yPoints = [];
+		var funkcijaPoints = [];
+			
+		for (i = 0; i < steps; i++) {
+		
+			x = math.evaluate(['i = ' + i, xExpression])[1];
+			y = math.evaluate(['i = ' + i, yExpression])[1];
+			xPoints[i] = {x: i, y: x,};
+			yPoints[i] = {x: i, y: y};
+			funkcijaPoints[i] = {x: i, y: funkcija(x, y)};
+		}
+			
+		var xDataset = new vis.DataSet(xPoints);
+		var yDataset = new vis.DataSet(yPoints);
+		var funkcijaDataset = new vis.DataSet(funkcijaPoints);
+
+		var xGraph2d = new vis.Graph2d(xgraph, xDataset, options);
+		var yGraph2d = new vis.Graph2d(ygraph, yDataset, options);
+		var funkcijaGraph2d = new vis.Graph2d(funkcijagraph, funkcijaDataset, options);
+
+	} 
+
+
+
+</script>
+		
+</body>
+</html>
